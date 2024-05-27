@@ -1,0 +1,96 @@
+﻿@page "/Instituicaos/edit"
+@inject InstituicoesApp.Data.ApplicationDbContext DB
+@using InstituicoesApp.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Instituicao</h4>
+<hr />
+@if (Instituicao is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Instituicao" OnValidSubmit="UpdateInstituicao" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Instituicao.Id" value="@Instituicao.Id" />
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome:</label>
+                    <InputText id="nome" @bind-Value="Instituicao.Nome" class="form-control" />
+                    <ValidationMessage For="() => Instituicao.Nome" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="endereço" class="form-label">Endereço:</label>
+                    <InputText id="endereço" @bind-Value="Instituicao.Endereço" class="form-control" />
+                    <ValidationMessage For="() => Instituicao.Endereço" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">Descricao:</label>
+                    <InputText id="descricao" @bind-Value="Instituicao.Descricao" class="form-control" />
+                    <ValidationMessage For="() => Instituicao.Descricao" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/instituicaos">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Instituicao? Instituicao { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Instituicao ??= await DB.Instituicoes.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Instituicao is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateInstituicao()
+    {
+        DB.Attach(Instituicao!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!InstituicaoExists(Instituicao!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/instituicaos");
+    }
+
+    bool InstituicaoExists(int id)
+    {
+        return DB.Instituicoes.Any(e => e.Id == id);
+    }
+}

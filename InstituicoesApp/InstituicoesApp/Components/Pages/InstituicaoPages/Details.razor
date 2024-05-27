@@ -1,0 +1,49 @@
+﻿@page "/instituicaos/details"
+@inject InstituicoesApp.Data.ApplicationDbContext DB
+@using InstituicoesApp.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Instituicao</h4>
+    <hr />
+    @if (instituicao is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Nome</dt>
+            <dd class="col-sm-10">@instituicao.Nome</dd>
+            <dt class="col-sm-2">Endereço</dt>
+            <dd class="col-sm-10">@instituicao.Endereço</dd>
+            <dt class="col-sm-2">Descricao</dt>
+            <dd class="col-sm-10">@instituicao.Descricao</dd>
+        </dl>
+        <div>
+            <a href="@($"/instituicaos/edit?id={instituicao.Id}")">Edit</a> |
+            <a href="@($"/instituicaos")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Instituicao? instituicao;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        instituicao = await DB.Instituicoes.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (instituicao is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
