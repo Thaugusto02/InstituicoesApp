@@ -1,13 +1,13 @@
-﻿@page "/instituicao/create"
+@page "/instituicaos/create"
 @inject InstituicoesApp.Data.ApplicationDbContext DB
 @using InstituicoesApp.Data
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
 
-<h1>Create</h1>
+<h1>Criar Nova Instituição</h1>
 
-<h4>Instituicao</h4>
+<h4>Registre uma nova Instituição</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -25,7 +25,7 @@
                 <ValidationMessage For="() => Instituicao.Endereço" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="descricao" class="form-label">Descricao:</label> 
+                <label for="descricao" class="form-label">Descrição:</label> 
                 <InputText id="descricao" @bind-Value="Instituicao.Descricao" class="form-control" /> 
                 <ValidationMessage For="() => Instituicao.Descricao" class="text-danger" /> 
             </div>        
